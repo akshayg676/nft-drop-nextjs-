@@ -25,7 +25,24 @@ const NFTDropPage = () => {
       </div>
 
       {/* right */}
-      <div></div>
+      <div className="flex flex-1 flex-col p-12 lg:col-span-6">
+        {/* Header */}
+        <header className="flex items-center justify-between">
+          <h1 className="w-52 cursor-pointer text-xl font-extralight sm:w-80">
+            The{" "}
+            <span className="font-bold underline decoration-pink-600/50">
+              META AMIGOS
+            </span>{" "}
+            NFT Market Place
+          </h1>
+          <button className="rounded-full bg-gradient-to-br from-violet-600 to-pink-600 px-4 py-text-xs font-bold text-white lg:px-5 lg:py-2 lg:text-base">
+            Sign In
+          </button>
+        </header>
+        <hr className="my-2 border" />
+        {/* Content */}
+        {/* Mint Button </div> */}
+      </div>
     </div>
   );
 };
