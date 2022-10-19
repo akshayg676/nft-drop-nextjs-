@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.swiper {
+  width: 170px;
+  height: 250px;
+}
+
+.simg {
+  height: 100%;
+  width: 100%;
+}
+
+.swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+}
+
+@media only screen and (min-width: 450px) {
+  .swiper {
+    width: 250px;
+    height: 280px;
+  }
+}
