@@ -1,4 +1,5 @@
 import React from "react";
+import { useAddress, useDisconnect, useMetamask } from "@thirdweb-dev/react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
@@ -11,6 +12,12 @@ import "swiper/css/navigation";
 import { Navigation, Pagination, Autoplay, EffectCards } from "swiper";
 
 const NFTDropPage = () => {
+  //Auth
+  const connectWithMetamask = useMetamask();
+  const address = useAddress();
+  const disconnect = useDisconnect();
+  // --
+
   return (
     <div className="flex  h-screen flex-col lg:grid lg:grid-cols-10">
       {/* left */}
@@ -44,11 +51,20 @@ const NFTDropPage = () => {
             </span>{" "}
             NFT Market Place
           </h1>
-          <button className="rounded-full bg-gradient-to-br from-violet-600 to-pink-600 px-4 py-2 text-xs font-bold text-white lg:px-5 lg:py-2 lg:text-base">
-            Sign In
+          <button
+            onClick={() => (address ? disconnect() : connectWithMetamask())}
+            className="rounded-full bg-gradient-to-br from-violet-600 to-pink-600 px-4 py-2 text-xs font-bold text-white lg:px-5 lg:py-2 lg:text-base"
+          >
+            {address ? "Sign Out" : "Sign In"}
           </button>
         </header>
         <hr className="my-2 border" />
+        {address && (
+          <p className="text-center text-sm text-rose-400">
+            You're logged in with wallet {address.substring(0, 5)}....
+            {address.substring(address.length - 5)}
+          </p>
+        )}
         {/* Content */}
         <div className="mt-10 flex flex1 flex-col items-center space-y-6 text-center lg:space-y-0 lg:justify-center">
           {/* <img
