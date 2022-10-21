@@ -17,7 +17,7 @@ const Home = ({ collection }: Props) => {
         NFT Market Place
       </h1>
 
-      <main className="bg-gradient-to-br from-[#12c2e9] via-[#c471ed] to-[#f64f59] rounded-[20px] py-10 px-5 shadow-xl shadow-rose-400/20">
+      <main className="bg-gradient-to-br from-[#12c2e9] via-[#c471ed] to-[#f64f59] rounded-[20px] py-10 px-5 shadow-xl shadow-violet-600/80">
         <div className="grid space-x-3 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {collection.map((collection) => (
             <Link href={`/nft/${collection.slug.current}`}>
@@ -32,12 +32,10 @@ const Home = ({ collection }: Props) => {
                   alt=""
                 />
                 <div className="p-5 text-center">
-                  <h2 className="text-2xl font-semibold ">
-                    {collection.title}
+                  <h2 className="text-3xl font-semibold ">
+                    {collection.nftCollectionName}
                   </h2>
-                  <p className="mt-2 text-sm font-normal">
-                    {collection.description}
-                  </p>
+                  <p className="mt-2 text-sm font-normal">{collection.title}</p>
                 </div>
               </div>
             </Link>
