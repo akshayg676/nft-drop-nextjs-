@@ -47,7 +47,7 @@ const NFTDropPage = () => {
           <h1 className="w-52 cursor-pointer text-xl font-extralight sm:w-80">
             The{" "}
             <span className="font-bold underline decoration-pink-600/50">
-              META AMIGOS
+              AURA UNI
             </span>{" "}
             NFT Market Place
           </h1>
