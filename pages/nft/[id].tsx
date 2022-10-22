@@ -28,16 +28,19 @@ interface Props {
 const NFTDropPage = ({ collection }: Props) => {
   const [claimedSupply, setClaimedSupply] = useState<number>(0);
   const [totalSupply, setTotalSupply] = useState<BigNumber>();
+  const [loading, setLoading] = useState<boolean>(true);
   const { contract } = useContract(collection.address, "nft-drop");
 
   useEffect(() => {
     if (!contract) return;
 
     const fetchNftDropData = async () => {
+      setLoading(true);
       const claimed = await contract.getAllClaimed();
       const total = await contract.totalSupply();
       setClaimedSupply(claimed.length);
       setTotalSupply(total);
+      setLoading(false);
     };
     fetchNftDropData();
   }, [contract]);
@@ -127,9 +130,15 @@ const NFTDropPage = ({ collection }: Props) => {
           <h1 className="pt-4 text-lg  font-semibold  lg:text-2xl">
             {collection.title}
           </h1>
-          <p className="pt-2 text-xl text-violet-800">
-            {claimedSupply} /{totalSupply?.toString()} NFT's claimed
-          </p>
+          {loading ? (
+            <p className="animate-bounce pt-2 text-xl text-violet-800">
+              Loading Supply Count...
+            </p>
+          ) : (
+            <p className="pt-2 text-xl text-violet-800">
+              {claimedSupply} /{totalSupply?.toString()} NFT's claimed
+            </p>
+          )}
         </div>
         {/* Mint Button */}
         <button className="mt-10 h-10 w-full rounded-full  bg-gradient-to-l from-[#833ab4] via-[#fd1d1d]  to-[#fcb045] font-bold text-white">
