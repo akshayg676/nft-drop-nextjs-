@@ -12,7 +12,8 @@ import "swiper/css";
 import "swiper/css/effect-cards";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-
+import { runFireworks } from "../../lib/utilis";
+import toast, { Toaster } from "react-hot-toast";
 // import required modules
 import { Navigation, Pagination, Autoplay, EffectCards } from "swiper";
 import { GetServerSideProps } from "next";
@@ -51,8 +52,87 @@ const NFTDropPage = ({ collection }: Props) => {
   const disconnect = useDisconnect();
   // --
 
+  const mintNft = async () => {
+    if (!contract || !address) return;
+    const quantity = 1; // how many unique NFTs you want to claim
+    setLoading(true);
+    const notification = toast.loading("Minting started....", {
+      style: {
+        background: "White",
+        border: "3px solid green",
+        color: "green",
+        fontWeight: "bolder",
+        fontSize: "20px",
+        padding: "20px",
+      },
+    });
+    try {
+      const tx = await contract.claimTo(address, quantity);
+      const claimedNFT = await tx[0].data(); // (optional) get the claimed NFT metadata
+      toast(
+        (t) => (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "5px",
+              border: "3px solid green",
+              borderRadius: "20px",
+            }}
+          >
+            <img
+              style={{
+                width: "150px",
+                height: "150px",
+                borderRadius: "20px",
+                objectFit: "cover",
+              }}
+              src={claimedNFT.metadata.image}
+              alt=""
+            />
+            <div
+              style={{
+                padding: "10px",
+                textAlign: "center",
+                wordBreak: "break-all",
+              }}
+            >
+              <p>
+                HOORAY... Successfully transferred NFT to your address{" "}
+                <span style={{ fontWeight: 700 }}>({claimedNFT.owner})</span>
+              </p>
+            </div>
+          </div>
+        ),
+        {
+          duration: 8000,
+        }
+      );
+      runFireworks();
+    } catch (error) {
+      console.log(error);
+      toast("Oops.... Something went wrong.!", {
+        style: {
+          background: "White",
+          border: "3px solid red",
+          color: "#781f19",
+          fontWeight: "bolder",
+          fontSize: "20px",
+          padding: "20px",
+        },
+      });
+    }
+
+    setLoading(false);
+    toast.dismiss(notification);
+  };
+
   return (
     <div className="flex  h-screen flex-col lg:grid lg:grid-cols-10">
+      <Toaster position="top-center" />
+
       {/* left */}
       <div className=" bg-gradient-to-br from-[#ff00cc] to-[#333399] lg:col-span-4">
         <div className="flex flex-col  items-center justify-center py-2 lg:min-h-screen">
@@ -95,13 +175,13 @@ const NFTDropPage = ({ collection }: Props) => {
         </header>
         <hr className="my-2 border" />
         {address && (
-          <p className="text-center text-sm text-rose-400">
+          <p className="text-center text-sm text-green-400">
             You're logged in with wallet {address.substring(0, 5)}....
             {address.substring(address.length - 5)}
           </p>
         )}
         {/* Content */}
-        <div className="mt-10 flex flex1 flex-col items-center space-y-6 text-center lg:space-y-0 lg:justify-center">
+        <div className="mt-10 flex flex-1 flex-col items-center space-y-6 text-center lg:space-y-0 lg:justify-center">
           <div className="pt-4 pb-4">
             <Swiper
               autoplay={{
@@ -127,22 +207,36 @@ const NFTDropPage = ({ collection }: Props) => {
               ))}
             </Swiper>
           </div>
-          <h1 className="pt-4 text-lg  font-semibold  lg:text-2xl">
+          <h1 className="pt-4 text-lg  font-semibold  lg:text-xl">
             {collection.title}
           </h1>
           {loading ? (
-            <p className="animate-bounce pt-2 text-xl text-violet-800">
+            <p className="animate-bounce pt-2 text-lg text-violet-800">
               Loading Supply Count...
             </p>
           ) : (
-            <p className="pt-2 text-xl text-violet-800">
+            <p className="pt-2 text-lg text-violet-800">
               {claimedSupply} /{totalSupply?.toString()} NFT's claimed
             </p>
           )}
         </div>
         {/* Mint Button */}
-        <button className="mt-10 h-10 w-full rounded-full  bg-gradient-to-l from-[#833ab4] via-[#fd1d1d]  to-[#fcb045] font-bold text-white">
-          Mint NFT(0.01 ETH)
+        <button
+          onClick={mintNft}
+          disabled={
+            loading || claimedSupply === totalSupply?.toNumber() || !address
+          }
+          className="mt-10 h-10 w-full rounded-full  bg-gradient-to-l from-[#833ab4] via-[#fd1d1d]  to-[#fcb045] font-bold text-white disabled:opacity-40"
+        >
+          {loading ? (
+            <>Loading</>
+          ) : claimedSupply === totalSupply?.toNumber() ? (
+            <>SOLD OUT</>
+          ) : !address ? (
+            <>Sign in to Mint</>
+          ) : (
+            <span>Mint NFT (0.01 ETH)</span>
+          )}
         </button>
       </div>
     </div>
