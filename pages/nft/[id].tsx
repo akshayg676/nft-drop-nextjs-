@@ -89,7 +89,7 @@ const NFTDropPage = ({ collection }: Props) => {
                 borderRadius: "20px",
                 objectFit: "cover",
               }}
-              src={claimedNFT.metadata.image}
+              src={claimedNFT.metadata.image ?? ""}
               alt=""
             />
             <div
