@@ -20,7 +20,7 @@ const Home = ({ collection }: Props) => {
       <main className="bg-gradient-to-br from-[#12c2e9] via-[#c471ed] to-[#f64f59] rounded-[20px] py-10 px-5 shadow-xl shadow-violet-600/80">
         <div className="grid space-x-3 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {collection.map((collection) => (
-            <Link href={`/nft/${collection.slug.current}`}>
+            <Link key={collection._id} href={`/nft/${collection.slug.current}`}>
               <div
                 className="flex cursor-pointer flex-col items-center
             transition-all duration-200

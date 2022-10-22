@@ -1,5 +1,10 @@
-import React from "react";
-import { useAddress, useDisconnect, useMetamask } from "@thirdweb-dev/react";
+import React, { useEffect, useState } from "react";
+import {
+  useAddress,
+  useDisconnect,
+  useMetamask,
+  useContract,
+} from "@thirdweb-dev/react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
@@ -14,12 +19,29 @@ import { GetServerSideProps } from "next";
 import { sanityClient, urlFor } from "../../sanity";
 import { Collection } from "../../typings";
 import Link from "next/link";
+import { BigNumber } from "ethers";
 
 interface Props {
   collection: Collection;
 }
 
 const NFTDropPage = ({ collection }: Props) => {
+  const [claimedSupply, setClaimedSupply] = useState<number>(0);
+  const [totalSupply, setTotalSupply] = useState<BigNumber>();
+  const { contract } = useContract(collection.address, "nft-drop");
+
+  useEffect(() => {
+    if (!contract) return;
+
+    const fetchNftDropData = async () => {
+      const claimed = await contract.getAllClaimed();
+      const total = await contract.totalSupply();
+      setClaimedSupply(claimed.length);
+      setTotalSupply(total);
+    };
+    fetchNftDropData();
+  }, [contract]);
+
   //Auth
   const connectWithMetamask = useMetamask();
   const address = useAddress();
@@ -77,11 +99,6 @@ const NFTDropPage = ({ collection }: Props) => {
         )}
         {/* Content */}
         <div className="mt-10 flex flex1 flex-col items-center space-y-6 text-center lg:space-y-0 lg:justify-center">
-          {/* <img
-            className="w-3/4 object-contain pb-10 lg:h-2/4"
-            src="https://res.cloudinary.com/dsrs8h01h/image/upload/v1666103251/bannernft_sijrxa.png"
-            alt=""
-          /> */}
           <div className="pt-4 pb-4">
             <Swiper
               autoplay={{
@@ -97,7 +114,7 @@ const NFTDropPage = ({ collection }: Props) => {
               className="mySwiper"
             >
               {collection.mainImages.map((path) => (
-                <SwiperSlide>
+                <SwiperSlide key={path._key}>
                   <img
                     className="simg"
                     src={urlFor(path).url()!}
@@ -110,7 +127,9 @@ const NFTDropPage = ({ collection }: Props) => {
           <h1 className="pt-4 text-lg  font-semibold  lg:text-2xl">
             {collection.title}
           </h1>
-          <p className="pt-2 text-xl text-violet-800">13 /21 NFT's claimed</p>
+          <p className="pt-2 text-xl text-violet-800">
+            {claimedSupply} /{totalSupply?.toString()} NFT's claimed
+          </p>
         </div>
         {/* Mint Button */}
         <button className="mt-10 h-10 w-full rounded-full  bg-gradient-to-l from-[#833ab4] via-[#fd1d1d]  to-[#fcb045] font-bold text-white">

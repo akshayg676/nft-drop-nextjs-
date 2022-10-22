@@ -2,6 +2,7 @@ interface Image {
   asset: {
     url: string;
   };
+  _key: string;
 }
 
 export interface Creator {
